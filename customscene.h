@@ -7,6 +7,7 @@
 
 //QGraphicsScene管理QGraphicsItem（单击/选择/移动/缩放/删除）
 // 自定义 Item
+class InteractiveView;
 class CustomItem : public QGraphicsRectItem
 {
 public:
@@ -22,17 +23,30 @@ protected:
 private:
     QPointF m_centerPointF;
     bool m_bResizing;
+
+
 };
 
 // 自定义 Scene
 class CustomScene : public QGraphicsScene
 {
+public:
+    explicit CustomScene(InteractiveView* view,QObject* parent=nullptr);
+    explicit CustomScene(QObject* parent=nullptr);
+
 protected:
     // 左键：添加item  右键：移除item
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     // Backspace键移除item
     void keyPressEvent(QKeyEvent *event);
+
+private:
+    InteractiveView* mView;
+
+private:
+    bool m_bMouseTranslate = false;
+    QPointF m_lastMousePos;
 };
 
 #endif // CUSTOMSCENE_H

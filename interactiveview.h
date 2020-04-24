@@ -30,7 +30,7 @@ protected:
     // 放大/缩小
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *event) override;
-
+    void leaveEvent(QEvent *event) override;
 
 public Q_SLOTS:
     void zoomIn();  // 放大

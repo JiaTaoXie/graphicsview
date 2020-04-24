@@ -2,16 +2,19 @@
 
 #include <QWheelEvent>
 #include <QKeyEvent>
+#include <QDebug>
 
 #define VIEW_CENTER viewport()->rect().center()
 #define VIEW_WIDTH  viewport()->rect().width()
 #define VIEW_HEIGHT viewport()->rect().height()
 
+//const int m11Data[] = {0.2,0.4,0.6};
+
 InteractiveView::InteractiveView(QWidget *parent)
     : QGraphicsView(parent),
       m_translateButton(Qt::LeftButton),
       m_scale(1.0),
-      m_zoomDelta(0.1),
+      m_zoomDelta(0.5),
       m_translateSpeed(1.0),
       m_bMouseTranslate(false)
 {
@@ -112,8 +115,6 @@ void InteractiveView::mousePressEvent(QMouseEvent *event)
             m_lastMousePos = event->pos();
         }
     }
-
-
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -154,11 +155,17 @@ void InteractiveView::paintEvent(QPaintEvent *event)
    painter.setPen(pen);
    QPointF scenePos = mapToScene(mCrossPos);
    QPointF centerPos = mapToScene(QPoint(0,0));
-   painter.drawText(mCrossPos+QPointF(10,-10),QString("x=%1,y=%2,x倍:%3")
+   painter.drawText(mCrossPos+QPointF(10,-10),QString("x=%1,y=%2,m11:%3")
                     .arg(scenePos.x()).arg(scenePos.y()).arg(transform().m11()));
 
-   painter.drawText(mCrossPos+QPointF(10,-40),QString("centerPos:x=%1,y=%2")
-                    .arg(centerPos.x()).arg(centerPos.y()));
+   painter.drawText(mCrossPos+QPointF(10,-40),QString("centerPos:x=%1,y=%2,m_scale:%3")
+                    .arg(centerPos.x()).arg(centerPos.y()).arg(QString::number(m_scale,'f',6)));
+}
+
+void InteractiveView::leaveEvent(QEvent *event)
+{
+    m_bMouseTranslate = false;
+    QGraphicsView::leaveEvent(event);
 }
 
 void InteractiveView::drawCross(QPainter& painter)
@@ -205,17 +212,38 @@ QVector<qreal> InteractiveView::getDashPattern()
     return dashes;
 }
 
+static int zoomIndex = 1;
 
 // 放大
 void InteractiveView::zoomIn()
 {
-    zoom(1 + m_zoomDelta);
+//    zoomIndex += 0.1;
+//    QTransform transform2;
+//    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
+//    setTransform(transform2);
+    const qreal m11 = transform().m11();
+    qreal newM11 = m11 + 0.5;
+    qreal scaleFactor = newM11/m11;
+    zoom(scaleFactor);
+
+//    zoom(1 + m_zoomDelta);
 }
 
 // 缩小
 void InteractiveView::zoomOut()
 {
-    zoom(1 - m_zoomDelta);
+//    zoomIndex -= 0.1;
+//    QTransform transform2;
+//    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
+//    setTransform(transform2);
+//    qDebug() << "transform m11:" << transform().m11();
+
+    const qreal m11 = transform().m11();
+    qreal newM11 = m11 - 0.5;
+    qreal scaleFactor = newM11/m11;
+    zoom(scaleFactor);
+
+//    zoom(1 - m_zoomDelta);
 }
 
 // 缩放 - scaleFactor：缩放的比例因子
@@ -225,6 +253,8 @@ void InteractiveView::zoom(float scaleFactor)
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.07 || factor > 100)
         return;
+
+    qDebug() << "====>scaleFactor:" << scaleFactor;
 
     scale(scaleFactor, scaleFactor);
     m_scale *= scaleFactor;

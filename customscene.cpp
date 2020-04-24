@@ -45,10 +45,12 @@ void CustomItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 m_bResizing = false;
             }
         } else {
+
             qDebug() << "Custom item left clicked.";
             QGraphicsItem::mousePressEvent(event);
             event->accept();
         }
+
     } else if (event->button() == Qt::RightButton) {
         qDebug() << "Custom item right clicked.";
         event->ignore();
@@ -91,10 +93,21 @@ int CustomItem::type() const
 
 
 
+#include "interactiveview.h"
 
+CustomScene::CustomScene(InteractiveView* view,QObject *parent)
+    : QGraphicsScene(parent)
+    , mView(view)
+{
 
+}
 
+CustomScene::CustomScene(QObject *parent)
+    : QGraphicsScene(parent)
+    , mView(nullptr)
+{
 
+}
 
 // 自定义 Scene
 void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -109,7 +122,18 @@ void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             item->setRect(point.x()-25, point.y()-25, 60, 60);
             addItem(item);
         }
-//        else if (event->button() == Qt::RightButton) {
+//        else if (event->button() == Qt::LeftButton) {
+////            QPointF point = mapToScene(event->pos());
+
+//            m_bMouseTranslate = true;
+//            m_lastMousePos = event->pos();
+
+//            qDebug() << "Custom item left clicked.";
+//            QGraphicsScene::mousePressEvent(event);
+//            event->accept();
+//        }
+//        else if (event->button() == Qt::RightButton &&
+//                 (event->modifiers() == Qt::AltModifier)) {
 //            // 检测光标下是否有 item
 //            QGraphicsItem *itemToRemove = NULL;
 //            foreach (QGraphicsItem *item, items(event->scenePos())) {
@@ -123,11 +147,20 @@ void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //                removeItem(itemToRemove);
 //        }
     }
+
+    QGraphicsScene::mousePressEvent(event);
 }
 
 void CustomScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "Custom scene moved.";
+    if (m_bMouseTranslate){
+        QPointF mouseDelta = event->pos() - m_lastMousePos;
+//        translate(mouseDelta);
+    }
+//    m_lastMousePos = event->pos();
+//    mCrossPos = m_lastMousePos;
+
+//    qDebug() << "Custom scene moved.";
     QGraphicsScene::mouseMoveEvent(event);
 }
 

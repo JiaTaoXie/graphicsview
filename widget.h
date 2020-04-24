@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class InteractiveView;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
 QT_END_NAMESPACE
@@ -15,7 +17,14 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+    void initView();
+
+private slots:
+    void on_lineEdit_returnPressed();
+
 private:
     Ui::Widget *ui;
+
+    InteractiveView *mView;
 };
 #endif // WIDGET_H

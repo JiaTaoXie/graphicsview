@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <math.h>
 #include "./canvasitems/klineitem.h"
+#include "viewport.h"
 
 #define VIEW_CENTER viewport()->rect().center()
 #define VIEW_WIDTH  viewport()->rect().width()
@@ -19,7 +20,8 @@ InteractiveView::InteractiveView(QWidget *parent)
       m_scale(1.0),
       m_zoomDelta(0.5),
       m_translateSpeed(1.0),
-      m_bMouseTranslate(false)
+      m_bMouseTranslate(false),
+      mViewPort(new Viewport(this))
 {
     // 去掉滚动条
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -30,6 +32,12 @@ InteractiveView::InteractiveView(QWidget *parent)
     setSceneRect(INT_MIN/2, INT_MIN/2, INT_MAX, INT_MAX);
     centerOn(0, 0);
     reCalSceneAviWidth();
+
+
+    setupViewport(mViewPort);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+    setStyleSheet("background: transparent;border:0px");
 }
 
 // 平移速度
@@ -116,13 +124,9 @@ void InteractiveView::mouseMoveEvent(QMouseEvent *event)
 
     m_lastMousePos = event->pos();
     mCrossPos = m_lastMousePos;
-
+//    viewport()->update();
+    mViewPort->update();
     QGraphicsView::mouseMoveEvent(event);
-    //    viewport()->update();
-
-
-
-
 }
 
 void InteractiveView::mousePressEvent(QMouseEvent *event)
@@ -161,14 +165,15 @@ void InteractiveView::wheelEvent(QWheelEvent *event)
     scrollAmount.y() > 0 ? zoomIn() : zoomOut();
 
     reCalSceneAviWidth();
+//    updateKLine();
+    updateKLine2();
 }
 
 void InteractiveView::paintEvent(QPaintEvent *event)
 {
+    qDebug() << "InteractiveView::paintEvent";
 
     QGraphicsView::paintEvent(event);
-
-
     //画背景
     //drawBK();
     //画k线
@@ -390,6 +395,14 @@ void InteractiveView::scrollY()
     updateKLine2();
 }
 
+void InteractiveView::changeXScale(double xScale)
+{
+    const qreal m11 = transform().m11();
+    qreal newM11 = xScale;
+    qreal scaleFactor = newM11/m11;
+    zoom(scaleFactor);
+}
+
 void InteractiveView::testCenter()
 {
     //    qDebug() << "center posF:" <<
@@ -453,8 +466,8 @@ void InteractiveView::updateKLine2(/*const QPointF &delta*/)
     //        return;
 
     double centerYPos = selectItems();
-    //    if(centerYPos == 0.0)
-    //        return ;
+    if(centerYPos == 0.0)
+        return ;
 
     //    //移动中心点,只改变y轴，不改变x轴
     //    QPointF tmpPos = mapFromScene(QPointF(0,centerYPos));
@@ -482,14 +495,10 @@ void InteractiveView::updateKLine2(/*const QPointF &delta*/)
 
     fitInView(newRectView,Qt::IgnoreAspectRatio);
 
-
-
-    qDebug() << "updateKLine2 fitInView new rectView:" << newRectView;
-
+//    qDebug() << "updateKLine2 fitInView new rectView:" << newRectView;
     //    QRectF fitRectF(QPointF(mapToScene(0,0).x(),mHeightItem->testGetHeight()),
     //                    QPointF)
     //    fitInView()
-
 }
 
 void InteractiveView::reCalSceneAviWidth()
@@ -499,7 +508,6 @@ void InteractiveView::reCalSceneAviWidth()
     QPointF rbPos = viewRectToScene.at(2); //QPointF(mapToScene(width(),height()));
     mSceneAviWidth = fabs(rbPos.x() - ltPos.x());
 }
-
 
 double InteractiveView::selectItems()
 {
@@ -523,7 +531,7 @@ double InteractiveView::selectItems()
     mHeightItem = static_cast<KLineItem*>(item_list.at(0));
     mLowItem = mHeightItem;
 
-    qDebug() << "item count:" << count;
+//    qDebug() << "item count:" << count;
     for (int i=1;i<count;i++) {
         KLineItem* kitem = static_cast<KLineItem*>(item_list.at(i));
         if(fabs(kitem->testGetHeight())>= fabs(mHeightItem->testGetHeight())){
@@ -563,4 +571,9 @@ void InteractiveView::makeHeightChanged()
 
     //    //拖拉的时候需要刷新，否则背景阑珊格刷新有问题
     //    scale(/*mScaleX*/1,mScaleY);
+}
+
+void InteractiveView::addCrossItem()
+{
+
 }

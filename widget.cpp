@@ -40,11 +40,14 @@ void Widget::initView()
 
 #ifndef QT_NO_OPENGL
 //    mView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
-    mView->setViewport(new QOpenGLWidget());
+//    mView->setViewport(new QOpenGLWidget());
 #endif
 //    mView->setViewport(new QWidget);
 
     ui->gridLayout->addWidget(mView);
+
+    QPushButton* btn = new QPushButton("打开",this);
+    btn->move(mView->pos());
 }
 
 void Widget::on_lineEdit_returnPressed()
@@ -70,4 +73,37 @@ void Widget::on_pushButton_3_clicked()
 void Widget::on_pushButton_4_clicked()
 {
     mView->selectItems();
+}
+
+void Widget::on_pushButton_5_clicked()
+{
+
+}
+
+void Widget::on_lineEdit_2_returnPressed()
+{
+        mView->changeXScale(ui->lineEdit_2->text().toDouble());
+}
+
+void Widget::on_lineEdit_2_cursorPositionChanged(int arg1, int arg2)
+{
+
+}
+
+void Widget::paintEvent(QPaintEvent *event)
+{
+    QPainter painter;
+    painter.begin(this);
+    painter.setPen(QPen(Qt::green));   
+
+    qreal heightSpace = height()/6;
+    qreal widthSpace = width()/6;
+    for (int i=0;i<5;i++) {
+        painter.drawLine(QPoint(0,(i+1)*heightSpace),QPoint(width(),(i+1)*heightSpace));
+        painter.drawLine(QPoint((i+1)*widthSpace,0),QPoint((i+1)*widthSpace,height()));
+    }
+
+    painter.end();
+
+    qDebug() << "widget painter event";
 }

@@ -34,6 +34,8 @@ public:
     explicit CustomScene(InteractiveView* view,QObject* parent=nullptr);
     explicit CustomScene(QObject* parent=nullptr);
 
+    void drawBK();
+
 protected:
     // 左键：添加item  右键：移除item
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

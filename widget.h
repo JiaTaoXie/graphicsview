@@ -12,7 +12,6 @@ QT_END_NAMESPACE
 class Widget : public QWidget
 {
     Q_OBJECT
-
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
@@ -29,9 +28,19 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_pushButton_5_clicked();
+
+    void on_lineEdit_2_returnPressed();
+
+    void on_lineEdit_2_cursorPositionChanged(int arg1, int arg2);
+
 private:
     Ui::Widget *ui;
 
     InteractiveView *mView;
+
+protected:
+    virtual void paintEvent(QPaintEvent *event) override;
+
 };
 #endif // WIDGET_H

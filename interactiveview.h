@@ -7,6 +7,7 @@
 class QWheelEvent;
 class QKeyEvent;
 class KLineItem;
+class Viewport;
 
 class InteractiveView : public QGraphicsView
 {
@@ -19,6 +20,8 @@ public:
     qreal translateSpeed() const;
     void populateScene(QGraphicsScene* scene);
 
+    void changeXScale(double xScale);
+
     void testCenter();
 
     void scrollY();
@@ -28,6 +31,8 @@ public:
     qreal zoomDelta() const;
 
     double selectItems();
+
+    void addCrossItem();
 
 protected:
     // 上/下/左/右键向各个方向移动、加/减键进行缩放、空格/回车键旋转
@@ -77,6 +82,8 @@ private:
 
     KLineItem *mHeightItem,*mLowItem;
     qreal mSceneAviWidth;
+
+    Viewport* mViewPort;
 
 
 };

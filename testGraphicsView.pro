@@ -22,6 +22,7 @@ SOURCES += \
     datafile.cpp \
     interactiveview.cpp \
     main.cpp \
+    viewport.cpp \
     widget.cpp
 
 HEADERS += \
@@ -29,6 +30,7 @@ HEADERS += \
     customscene.h \
     datafile.h \
     interactiveview.h \
+    viewport.h \
     widget.h
 
 FORMS += \
@@ -41,3 +43,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     dataKLine.txt
+
+RESOURCES += \
+    img.qrc

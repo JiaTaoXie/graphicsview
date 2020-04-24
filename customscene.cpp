@@ -99,14 +99,39 @@ CustomScene::CustomScene(InteractiveView* view,QObject *parent)
     : QGraphicsScene(parent)
     , mView(view)
 {
-
+    drawBK();
 }
 
 CustomScene::CustomScene(QObject *parent)
     : QGraphicsScene(parent)
     , mView(nullptr)
 {
+    drawBK();
+}
 
+void CustomScene::drawBK()
+{
+    QPolygonF myPolygon1;
+    myPolygon1 << QPointF(0,10) << QPointF(20,10);
+    QPolygonF myPolygon2;
+    myPolygon2 << QPointF(10,0) << QPointF(10,20);
+    QPixmap pixmap(20, 20);
+    pixmap.fill(Qt::transparent);
+//    pixmap.fill(Qt::blue);
+    QPainter painter(&pixmap);
+
+//    QVector<qreal> dashes;//line style--虚线
+//    qreal space = 2;
+//    dashes << 2 << space << 2 <<space;
+//    QPen pen(Qt::lightGray,1);
+//    pen.setDashPattern(dashes);
+//    pen.setWidth(1);
+
+//    painter.setPen(pen);
+//    painter.translate(0, 0);
+//    painter.drawPolyline(myPolygon1);
+//    painter.drawPolyline(myPolygon2);
+    setBackgroundBrush(pixmap);
 }
 
 // 自定义 Scene
@@ -122,30 +147,30 @@ void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             item->setRect(point.x()-25, point.y()-25, 60, 60);
             addItem(item);
         }
-//        else if (event->button() == Qt::LeftButton) {
-////            QPointF point = mapToScene(event->pos());
+        //        else if (event->button() == Qt::LeftButton) {
+        ////            QPointF point = mapToScene(event->pos());
 
-//            m_bMouseTranslate = true;
-//            m_lastMousePos = event->pos();
+        //            m_bMouseTranslate = true;
+        //            m_lastMousePos = event->pos();
 
-//            qDebug() << "Custom item left clicked.";
-//            QGraphicsScene::mousePressEvent(event);
-//            event->accept();
-//        }
-//        else if (event->button() == Qt::RightButton &&
-//                 (event->modifiers() == Qt::AltModifier)) {
-//            // 检测光标下是否有 item
-//            QGraphicsItem *itemToRemove = NULL;
-//            foreach (QGraphicsItem *item, items(event->scenePos())) {
-//                if (item->type() == QGraphicsItem::UserType+1) {
-//                    itemToRemove = item;
-//                    break;
-//                }
-//            }
-//            // 从 Scene 上移除 item
-//            if (itemToRemove != NULL)
-//                removeItem(itemToRemove);
-//        }
+        //            qDebug() << "Custom item left clicked.";
+        //            QGraphicsScene::mousePressEvent(event);
+        //            event->accept();
+        //        }
+        //        else if (event->button() == Qt::RightButton &&
+        //                 (event->modifiers() == Qt::AltModifier)) {
+        //            // 检测光标下是否有 item
+        //            QGraphicsItem *itemToRemove = NULL;
+        //            foreach (QGraphicsItem *item, items(event->scenePos())) {
+        //                if (item->type() == QGraphicsItem::UserType+1) {
+        //                    itemToRemove = item;
+        //                    break;
+        //                }
+        //            }
+        //            // 从 Scene 上移除 item
+        //            if (itemToRemove != NULL)
+        //                removeItem(itemToRemove);
+        //        }
     }
 
     QGraphicsScene::mousePressEvent(event);
@@ -155,12 +180,12 @@ void CustomScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_bMouseTranslate){
         QPointF mouseDelta = event->pos() - m_lastMousePos;
-//        translate(mouseDelta);
+        //        translate(mouseDelta);
     }
-//    m_lastMousePos = event->pos();
-//    mCrossPos = m_lastMousePos;
+    //    m_lastMousePos = event->pos();
+    //    mCrossPos = m_lastMousePos;
 
-//    qDebug() << "Custom scene moved.";
+    //    qDebug() << "Custom scene moved.";
     QGraphicsScene::mouseMoveEvent(event);
 }
 

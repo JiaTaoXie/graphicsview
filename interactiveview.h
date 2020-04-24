@@ -2,9 +2,11 @@
 #define INTERACTIVEVIEW_H
 
 #include <QGraphicsView>
+#include "datafile.h"
 
 class QWheelEvent;
 class QKeyEvent;
+class KLineItem;
 
 class InteractiveView : public QGraphicsView
 {
@@ -15,6 +17,11 @@ public:
     // 平移速度
     void setTranslateSpeed(qreal speed);
     qreal translateSpeed() const;
+    void populateScene(QGraphicsScene* scene);
+
+    void testCenter();
+
+    void scrollY();
 
     // 缩放的增量
     void setZoomDelta(qreal delta);
@@ -27,6 +34,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     // 放大/缩小
     void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *event) override;
@@ -48,12 +56,27 @@ private:
     QPoint mCrossPos;
     QColor mCrossColor = Qt::red;
 
-
+    DataFile mDataFile;
 private:
     QVector<qreal> getDashPattern();
     void drawCrossHorLine(QPainter& painter);
     void drawCrossVerLine(QPainter& painter);
     void drawCross(QPainter& painter);
+    void updateCenteOn(const QPointF &delta,const QPoint& lastpos);
+    void updateCenteOn2(const QPointF &delta,const QPoint& lastpos);
+    void updateKLine();
+    void updateKLine2();
+
+    void reCalSceneAviWidth();
+
+    bool autoUpdateKLine = true;
+    double selectItems();
+    void makeHeightChanged();
+
+    KLineItem *mHeightItem,*mLowItem;
+    qreal mSceneAviWidth;
+
+
 };
 
 

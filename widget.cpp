@@ -3,6 +3,7 @@
 #include <QApplication>
 #include "interactiveview.h"
 #include "customscene.h"
+#include <QDebug>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -32,7 +33,7 @@ void Widget::initView()
 //    QGraphicsView view;
     mView = new InteractiveView();
     mView->setScene(scene);
-//    view.populateScene(&scene);
+    mView->populateScene(scene);
 //    mView.show();
 
     ui->gridLayout->addWidget(mView);
@@ -41,4 +42,19 @@ void Widget::initView()
 void Widget::on_lineEdit_returnPressed()
 {
 
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    mView->scrollY();
+}
+
+void Widget::on_pushButton_clicked()
+{
+    qDebug() << "sceneRect:" << mView->mapToScene(mView->rect());
+}
+
+void Widget::on_pushButton_3_clicked()
+{
+    mView->testCenter();
 }

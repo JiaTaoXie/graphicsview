@@ -91,13 +91,13 @@ void KLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     painter->drawRect(-KLineBaseWidth/2.0,yPos,KLineBaseWidth,priceHeight);
 
-    pen.setColor(Qt::black);
-    painter->setPen(pen);
+//    pen.setColor(Qt::black);
+//    painter->setPen(pen);
 
     painter->drawLine(0,-lineHeight/2.0,0,lineHeight/2.0);
 
 
-    painter->drawLine(-KLineBaseWidth/2,0,KLineBaseWidth/2,0);
+//    painter->drawLine(-KLineBaseWidth/2,0,KLineBaseWidth/2,0);
 
 //    painter->drawText(0,0,QString::number(mIndex));
 

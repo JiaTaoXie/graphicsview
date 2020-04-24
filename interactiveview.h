@@ -27,6 +27,8 @@ public:
     void setZoomDelta(qreal delta);
     qreal zoomDelta() const;
 
+    double selectItems();
+
 protected:
     // 上/下/左/右键向各个方向移动、加/减键进行缩放、空格/回车键旋转
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
@@ -45,6 +47,7 @@ public Q_SLOTS:
     void zoomOut();  // 缩小
     void zoom(float scaleFactor); // 缩放 - scaleFactor：缩放的比例因子
     void translate(QPointF delta);  // 平移
+    void translate_old(QPointF delta);
 
 private:
     Qt::MouseButton m_translateButton;  // 平移按钮
@@ -70,7 +73,6 @@ private:
     void reCalSceneAviWidth();
 
     bool autoUpdateKLine = true;
-    double selectItems();
     void makeHeightChanged();
 
     KLineItem *mHeightItem,*mLowItem;

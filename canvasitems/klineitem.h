@@ -10,7 +10,7 @@
 #define ITEMSPACE 4.0
 #define ITEMLINEWIDTH 1.0
 
-#define KLineBaseWidth 2.0 /*16*/
+#define KLineBaseWidth 1.0 /*16*/
 #define KLineBaseHeight 50.0/*40*/
 #define REDCOLOR QColor(237,97,96)
 #define GREENCOLOR QColor(0,247,172)

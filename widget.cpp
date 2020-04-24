@@ -4,6 +4,8 @@
 #include "interactiveview.h"
 #include "customscene.h"
 #include <QDebug>
+#include <QOpenGLWidget>
+#include <QGLWidget>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -36,6 +38,12 @@ void Widget::initView()
     mView->populateScene(scene);
 //    mView.show();
 
+#ifndef QT_NO_OPENGL
+//    mView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    mView->setViewport(new QOpenGLWidget());
+#endif
+//    mView->setViewport(new QWidget);
+
     ui->gridLayout->addWidget(mView);
 }
 
@@ -57,4 +65,9 @@ void Widget::on_pushButton_clicked()
 void Widget::on_pushButton_3_clicked()
 {
     mView->testCenter();
+}
+
+void Widget::on_pushButton_4_clicked()
+{
+    mView->selectItems();
 }

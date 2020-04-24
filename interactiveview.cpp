@@ -98,8 +98,8 @@ void InteractiveView::keyPressEvent(QKeyEvent *event)
 void InteractiveView::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_bMouseTranslate){
-//        QPointF mouseDelta = mapToScene(event->pos()) - mapToScene(m_lastMousePos);
-//        translate(mouseDelta);
+        //        QPointF mouseDelta = mapToScene(event->pos()) - mapToScene(m_lastMousePos);
+        //        translate(mouseDelta);
 
         QPointF delta;
         if(autoUpdateKLine){
@@ -118,7 +118,7 @@ void InteractiveView::mouseMoveEvent(QMouseEvent *event)
     mCrossPos = m_lastMousePos;
 
     QGraphicsView::mouseMoveEvent(event);
-    viewport()->update();
+    //    viewport()->update();
 
 
 
@@ -166,31 +166,31 @@ void InteractiveView::wheelEvent(QWheelEvent *event)
 void InteractiveView::paintEvent(QPaintEvent *event)
 {
 
-   QGraphicsView::paintEvent(event);
+    QGraphicsView::paintEvent(event);
 
-   QPainter painter;
-   painter.begin(this->viewport());
 
-   //画背景
-   //drawBK();
-   //画k线
-//   if(mDrawCross){
-       drawCross(painter);
-//   }
+    //画背景
+    //drawBK();
+    //画k线
+    if(false){
+        QPainter painter;
+        painter.begin(this->viewport());
 
-   QPen pen = painter.pen();
-   pen.setColor(Qt::red);
-   painter.setPen(pen);
-   QPointF scenePos = mapToScene(mCrossPos);
-   QPointF centerPos = mapToScene(QPoint(0,0));
-   painter.drawText(mCrossPos+QPointF(10,-10),QString("x=%1,y=%2,m11:%3,m12:%4")
-                    .arg(scenePos.x()).arg(scenePos.y()).arg(transform().m11()).arg(transform().m21()));
+        drawCross(painter);
 
-   painter.drawText(mCrossPos+QPointF(10,-40),QString("centerPos:x=%1,y=%2,m_scale:%3")
-                    .arg(centerPos.x()).arg(centerPos.y()).arg(QString::number(m_scale,'f',6)));
+        QPen pen = painter.pen();
+        pen.setColor(Qt::red);
+        painter.setPen(pen);
+        QPointF scenePos = mapToScene(mCrossPos);
+        QPointF centerPos = mapToScene(QPoint(0,0));
+        painter.drawText(mCrossPos+QPointF(10,-10),QString("x=%1,y=%2,m11:%3,m12:%4")
+                         .arg(scenePos.x()).arg(scenePos.y()).arg(transform().m11()).arg(transform().m21()));
 
-   painter.drawRect(QRect(rect().center().x()-2, rect().center().y() - 2,4,4));
-//   centerPos
+        painter.drawText(mCrossPos+QPointF(10,-40),QString("centerPos:x=%1,y=%2,m_scale:%3")
+                         .arg(centerPos.x()).arg(centerPos.y()).arg(QString::number(m_scale,'f',6)));
+
+        painter.drawRect(QRect(rect().center().x()-2, rect().center().y() - 2,4,4));
+    }
 
 }
 
@@ -249,33 +249,33 @@ static int zoomIndex = 1;
 // 放大
 void InteractiveView::zoomIn()
 {
-//    zoomIndex += 0.1;
-//    QTransform transform2;
-//    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
-//    setTransform(transform2);
+    //    zoomIndex += 0.1;
+    //    QTransform transform2;
+    //    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
+    //    setTransform(transform2);
     const qreal m11 = transform().m11();
     qreal newM11 = m11 + 1;
     qreal scaleFactor = newM11/m11;
     zoom(scaleFactor);
 
-//    zoom(1 + m_zoomDelta);
+    //    zoom(1 + m_zoomDelta);
 }
 
 // 缩小
 void InteractiveView::zoomOut()
 {
-//    zoomIndex -= 0.1;
-//    QTransform transform2;
-//    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
-//    setTransform(transform2);
-//    qDebug() << "transform m11:" << transform().m11();
+    //    zoomIndex -= 0.1;
+    //    QTransform transform2;
+    //    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
+    //    setTransform(transform2);
+    //    qDebug() << "transform m11:" << transform().m11();
 
     const qreal m11 = transform().m11();
     qreal newM11 = m11 - 1;
     qreal scaleFactor = newM11/m11;
     zoom(scaleFactor);
 
-//    zoom(1 - m_zoomDelta);
+    //    zoom(1 - m_zoomDelta);
 }
 
 // 缩放 - scaleFactor：缩放的比例因子
@@ -295,19 +295,48 @@ void InteractiveView::zoom(float scaleFactor)
 // 平移
 void InteractiveView::translate(QPointF delta)
 {
+    //    // 根据当前 zoom 缩放平移数
+    //   delta *= transform().m11();
+
+    //    // view 根据鼠标下的点作为锚点来定位 scene
+    //    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    ////    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
+    //    QPointF oldScenePos = mapToScene(rect().center());
+    //    QPointF newCenter(oldScenePos - delta);
+    //    centerOn(newCenter);
+
+    //    // scene 在 view 的中心点作为锚点
+    //    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+
+
     // 根据当前 zoom 缩放平移数
-   delta *= transform().m11();
+    delta *= transform().m11();
 
     // view 根据鼠标下的点作为锚点来定位 scene
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-//    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
-    QPointF oldScenePos = mapToScene(rect().center());
-    QPointF newCenter(oldScenePos - delta);
-    centerOn(newCenter);
+    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
+    centerOn(mapToScene(newCenter));
 
     // scene 在 view 的中心点作为锚点
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
+
+// 平移
+void InteractiveView::translate_old(QPointF delta)
+{
+    // 根据当前 zoom 缩放平移数
+    delta *= m_scale;
+    delta *= m_translateSpeed;
+
+    // view 根据鼠标下的点作为锚点来定位 scene
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
+    centerOn(mapToScene(newCenter));
+
+    // scene 在 view 的中心点作为锚点
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+}
+
 
 void InteractiveView::populateScene(QGraphicsScene* scene)
 {
@@ -357,13 +386,13 @@ void InteractiveView::populateScene(QGraphicsScene* scene)
 
 void InteractiveView::scrollY()
 {
-//    fitInView()
+    //    fitInView()
     updateKLine2();
 }
 
 void InteractiveView::testCenter()
 {
-//    qDebug() << "center posF:" <<
+    //    qDebug() << "center posF:" <<
 
     qDebug() << "get center then map to scene:" << mapToScene(rect().center());
     QPolygonF mapRect = mapToScene(rect());
@@ -374,15 +403,15 @@ void InteractiveView::testCenter()
 
 void InteractiveView::updateCenteOn(const QPointF &delta,const QPoint& lastpos)
 {
-//    translate(delta);
-    translate(delta);
-//    updateKLine();
+    //    translate(delta);
+    translate_old(delta);
+    //    updateKLine();
     m_lastMousePos = lastpos;
 }
 
 void InteractiveView::updateCenteOn2(const QPointF &delta,const QPoint& lastpos)
 {
-//    translate(delta);
+    //    translate(delta);
     translate(delta);
     updateKLine2();
     m_lastMousePos = lastpos;
@@ -400,11 +429,11 @@ void InteractiveView::updateKLine()
     //移动中心点,只改变y轴，不改变x轴
     QPointF tmpPos = mapFromScene(QPointF(0,centerYPos));
 
-//    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));  // 下移
+    //    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));  // 下移
     translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));
 
-//    makeHeightChanged();
-//    qDebug() << "StockCanvas::updateKLine mScaleY:" << mScaleY;
+    //    makeHeightChanged();
+    //    qDebug() << "StockCanvas::updateKLine mScaleY:" << mScaleY;
 }
 
 //// 根据当前 zoom 缩放平移数
@@ -420,32 +449,32 @@ void InteractiveView::updateKLine()
 
 void InteractiveView::updateKLine2(/*const QPointF &delta*/)
 {
-//    if(!autoUpdateKLine)
-//        return;
+    //    if(!autoUpdateKLine)
+    //        return;
 
     double centerYPos = selectItems();
-//    if(centerYPos == 0.0)
-//        return ;
+    //    if(centerYPos == 0.0)
+    //        return ;
 
-//    //移动中心点,只改变y轴，不改变x轴
-//    QPointF tmpPos = mapFromScene(QPointF(0,centerYPos));
+    //    //移动中心点,只改变y轴，不改变x轴
+    //    QPointF tmpPos = mapFromScene(QPointF(0,centerYPos));
 
-////    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));  // 下移
-//    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));
+    ////    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));  // 下移
+    //    translate(QPointF(0, VIEW_HEIGHT/2 - tmpPos.y()));
 
-//    makeHeightChanged();
-//    qDebug() << "StockCanvas::updateKLine mScaleY:" << mScaleY;
+    //    makeHeightChanged();
+    //    qDebug() << "StockCanvas::updateKLine mScaleY:" << mScaleY;
 
     QPolygonF viewRectToScene = mapToScene(rect());
     QPointF ltPos = viewRectToScene.at(0); //QPointF(mapToScene(0,0));
     QPointF rbPos = viewRectToScene.at(2); //QPointF(mapToScene(width(),height()));
     //左上，右上，左下，右下
-//QPolygonF(QPointF(1251.76,-423.653)QPointF(1632.56,-423.653)QPointF(1632.56,-324.537)QPointF(1251.76,-324.537))
+    //QPolygonF(QPointF(1251.76,-423.653)QPointF(1632.56,-423.653)QPointF(1632.56,-324.537)QPointF(1251.76,-324.537))
 
     QPointF newLTPos = QPointF(ltPos.x(),mHeightItem->testGetHeight());
 
     qreal newHeight = fabs(mLowItem->testGetLow()-mHeightItem->testGetHeight());
-//    qreal newWidth = width()*transform().m11();
+    //    qreal newWidth = width()*transform().m11();
 
 
 
@@ -457,9 +486,9 @@ void InteractiveView::updateKLine2(/*const QPointF &delta*/)
 
     qDebug() << "updateKLine2 fitInView new rectView:" << newRectView;
 
-//    QRectF fitRectF(QPointF(mapToScene(0,0).x(),mHeightItem->testGetHeight()),
-//                    QPointF)
-//    fitInView()
+    //    QRectF fitRectF(QPointF(mapToScene(0,0).x(),mHeightItem->testGetHeight()),
+    //                    QPointF)
+    //    fitInView()
 
 }
 
@@ -480,7 +509,7 @@ double InteractiveView::selectItems()
     QPointF rectPos = leftTopPos+QPointF(0,-3000);
 
     QRectF selectRect(rectPos,QSizeF(fabs(rightBtmPos.x()-leftTopPos.x()),
-                                                         fabs(rectPos.y())));
+                                     fabs(rectPos.y())));
 
     QList<QGraphicsItem *> item_list =  scene()->items(selectRect);
     int count = item_list.count();
@@ -494,6 +523,7 @@ double InteractiveView::selectItems()
     mHeightItem = static_cast<KLineItem*>(item_list.at(0));
     mLowItem = mHeightItem;
 
+    qDebug() << "item count:" << count;
     for (int i=1;i<count;i++) {
         KLineItem* kitem = static_cast<KLineItem*>(item_list.at(i));
         if(fabs(kitem->testGetHeight())>= fabs(mHeightItem->testGetHeight())){
@@ -504,13 +534,6 @@ double InteractiveView::selectItems()
         }
     }
 
-//    foreach(auto item,item_list){
-//        KLineItem* kitem = static_cast<KLineItem*>(item);
-//        qDebug() << QString("item index:%1,height value:%2,low value:%3")
-//                    .arg(kitem->getIndex())
-//                    .arg(kitem->testGetHeight())
-//                    .arg(kitem->testGetLow());
-//    }
 
     return (mHeightItem->pos().y() - mLowItem->pos().y())/2 + mLowItem->pos().y();
 }
@@ -521,8 +544,8 @@ void InteractiveView::makeHeightChanged()
         return ;
     }
 
-//    qDebug() << "mHeightItem map from scene pos:" << mapFromScene(mHeightItem->pos());
-//    qDebug() << "mLowItem map from scene pos:" << mapFromScene(mLowItem->pos());
+    //    qDebug() << "mHeightItem map from scene pos:" << mapFromScene(mHeightItem->pos());
+    //    qDebug() << "mLowItem map from scene pos:" << mapFromScene(mLowItem->pos());
 
     QPointF hItemScenePos = mapFromScene(mHeightItem->pos());
     QPointF lItemScenePos = mapFromScene(mLowItem->pos());
@@ -533,11 +556,11 @@ void InteractiveView::makeHeightChanged()
     if(sceneHLength == 0)
         return ;
 
-//    //检测抖动，缩放比例大于0.005时进行缩放
-//    qreal scaleY = VIEW_HEIGHT*0.7/sceneHLength;
-//    if(fabs(mScaleY - scaleY) > 0.02)
-//        mScaleY = scaleY;
+    //    //检测抖动，缩放比例大于0.005时进行缩放
+    //    qreal scaleY = VIEW_HEIGHT*0.7/sceneHLength;
+    //    if(fabs(mScaleY - scaleY) > 0.02)
+    //        mScaleY = scaleY;
 
-//    //拖拉的时候需要刷新，否则背景阑珊格刷新有问题
-//    scale(/*mScaleX*/1,mScaleY);
+    //    //拖拉的时候需要刷新，否则背景阑珊格刷新有问题
+    //    scale(/*mScaleX*/1,mScaleY);
 }

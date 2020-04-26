@@ -92,9 +92,10 @@ void Widget::on_lineEdit_2_cursorPositionChanged(int arg1, int arg2)
 
 void Widget::paintEvent(QPaintEvent *event)
 {
+    //绘制背景表格
     QPainter painter;
     painter.begin(this);
-    painter.fillRect(rect(),QBrush(QColor("#2F3843")));
+    painter.fillRect(mView->rect(),QBrush(QColor("#2F3843")));
     painter.setPen(QPen(QColor(255,255,255,50)));
 
     qreal heightSpace = height()/6;
@@ -106,5 +107,5 @@ void Widget::paintEvent(QPaintEvent *event)
 
     painter.end();
 
-    qDebug() << "widget painter event";
+//    qDebug() << "widget painter event";
 }

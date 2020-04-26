@@ -155,6 +155,21 @@ void InteractiveView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     autoUpdateKLine = !autoUpdateKLine;
     QGraphicsView::mouseDoubleClickEvent(event);
+
+    QPointF leftTopPos = mapToScene(QPoint(0,0));
+    QPointF rightBtmPos = mapToScene(width(),height());
+
+    QPointF rectPos = leftTopPos+QPointF(0,-3000);
+
+    QRectF selectRect(rectPos,QSizeF(fabs(rightBtmPos.x()-leftTopPos.x()),
+                                     fabs(rectPos.y())));
+
+    QList<QGraphicsItem *> item_list =  scene()->items(selectRect);
+    int count = item_list.count();
+
+    qDebug() << "count:" << count;
+
+
 }
 
 // 放大/缩小
@@ -172,7 +187,7 @@ void InteractiveView::wheelEvent(QWheelEvent *event)
 
 void InteractiveView::paintEvent(QPaintEvent *event)
 {
-    qDebug() << "InteractiveView::paintEvent";
+//    qDebug() << "InteractiveView::paintEvent";
 
     QGraphicsView::paintEvent(event);
     //画背景
@@ -250,8 +265,6 @@ QVector<qreal> InteractiveView::getDashPattern()
     return dashes;
 }
 
-static int zoomIndex = 1;
-
 // 放大
 void InteractiveView::zoomIn()
 {
@@ -260,7 +273,7 @@ void InteractiveView::zoomIn()
     //    transform2.setMatrix(zoomIndex,1,1,1,1,1,1,1,1);
     //    setTransform(transform2);
     const qreal m11 = transform().m11();
-    qreal newM11 = m11 + 1;
+    qreal newM11 = m11 + 0.5;
     qreal scaleFactor = newM11/m11;
     zoom(scaleFactor);
 
@@ -277,7 +290,7 @@ void InteractiveView::zoomOut()
     //    qDebug() << "transform m11:" << transform().m11();
 
     const qreal m11 = transform().m11();
-    qreal newM11 = m11 - 1;
+    qreal newM11 = m11 - 0.5;
     qreal scaleFactor = newM11/m11;
     zoom(scaleFactor);
 
@@ -289,8 +302,10 @@ void InteractiveView::zoom(float scaleFactor)
 {
     // 防止过小或过大
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-        return;
+    if (factor < 1 || factor > 100){
+        return ;
+    }
+
 
     qDebug() << "====>scaleFactor:" << scaleFactor;
 
@@ -316,11 +331,15 @@ void InteractiveView::translate(QPointF delta)
 
 
     // 根据当前 zoom 缩放平移数
-    delta *= transform().m11();
+    qreal m11 = transform().m11();
+    delta *= mTestScaleX;
+
+//    delta *= transform().m11();
+
 
     qDebug() << "mouse move delta:" << delta;
 
-//    QPointF oldCenterPos =
+    QPointF oldCenterPos = getCenterPos();
 
     // view 根据鼠标下的点作为锚点来定位 scene
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -330,6 +349,7 @@ void InteractiveView::translate(QPointF delta)
     QPointF newCenter = getCenterPos() - delta;
     centerOn(newCenter);
     setCenterPos(newCenter);
+    qDebug() << "scene center delta:" << oldCenterPos - newCenter;
 
     // scene 在 view 的中心点作为锚点
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -406,10 +426,12 @@ void InteractiveView::scrollY()
 
 void InteractiveView::changeXScale(double xScale)
 {
-    const qreal m11 = transform().m11();
-    qreal newM11 = xScale;
-    qreal scaleFactor = newM11/m11;
-    zoom(scaleFactor);
+//    const qreal m11 = transform().m11();
+//    qreal newM11 = xScale;
+//    qreal scaleFactor = newM11/m11;
+//    zoom(scaleFactor);
+//    updateKLine2();
+    mTestScaleX = xScale;
 }
 
 void InteractiveView::testCenter()

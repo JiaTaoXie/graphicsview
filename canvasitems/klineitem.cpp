@@ -63,7 +63,7 @@ void KLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     QPen pen;
-    double scaleFactor = painter->matrix().m11();
+    qreal scaleFactor = painter->matrix().m11();
     pen.setWidth(pen.width()/scaleFactor); //线段保持原来的线宽
 
     QColor drawColor = color;
@@ -73,15 +73,15 @@ void KLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setPen(pen);
 
 //    double priceHeight = fabs(closePrice - openPrice)*KLineBaseHeight;
-    double lineHeight = (highestBid - lowestBid)*KLineBaseHeight;
+    qreal lineHeight = (highestBid - lowestBid)*KLineBaseHeight;
 
-    double centerPrice = (lowestBid + (highestBid - lowestBid)/2.0);
+    qreal centerPrice = (lowestBid + (highestBid - lowestBid)/2.0);
 
     //   18 22  center 20    open 21- close 21.5 涨    center上移1
     //   15 25  center 20    open 17-close 19
     //   15 25  center 20    open 19 close 17
-    double priceHeight = fabs(closePrice - openPrice)*KLineBaseHeight;
-    double yPos = 0.0;
+    qreal priceHeight = fabs(closePrice - openPrice)*KLineBaseHeight;
+    qreal yPos = 0.0;
     if(openPrice >= closePrice){
         yPos = (centerPrice - openPrice)*KLineBaseHeight;
     }
@@ -89,12 +89,12 @@ void KLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         yPos = (centerPrice - closePrice)*KLineBaseHeight;
     }
 
-    painter->drawRect(-KLineBaseWidth/2.0,yPos,KLineBaseWidth,priceHeight);
+    painter->drawRect(QRectF(-KLineBaseWidth/2.0,yPos,KLineBaseWidth,priceHeight));
 
 //    pen.setColor(Qt::black);
 //    painter->setPen(pen);
 
-    painter->drawLine(0,-lineHeight/2.0,0,lineHeight/2.0);
+    painter->drawLine(QPointF(0,-lineHeight/2.0),QPointF(0,lineHeight/2.0));
 
 
 //    painter->drawLine(-KLineBaseWidth/2,0,KLineBaseWidth/2,0);

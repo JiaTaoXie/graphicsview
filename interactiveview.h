@@ -90,6 +90,7 @@ private:
     QPointF mCenterPos;
 
 
+    qreal mTestScaleX = 1.0;
 };
 
 

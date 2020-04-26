@@ -13,11 +13,10 @@ void Viewport::paintEvent(QPaintEvent *e)
     QOpenGLWidget::paintEvent(e);
     qDebug() << "Viewport::paintEvent";
 
-    QPainter painter;
-    painter.begin(this);
-    painter.setPen(QPen(Qt::red,2));
-    painter.drawLine(QPoint(0,0),QPoint(width(),height()));
+//    QPainter painter;
+//    painter.begin(this);
+//    painter.setPen(QPen(Qt::red,2));
+//    painter.drawLine(QPoint(0,0),QPoint(width(),height()));
 
-    painter.end();
-
+//    painter.end();
 }

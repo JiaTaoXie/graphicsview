@@ -62,7 +62,7 @@ private:
     QPoint m_lastMousePos;  // 鼠标最后按下的位置
     qreal m_scale;  // 缩放值
     QPoint mCrossPos;
-    QColor mCrossColor = Qt::red;
+    QColor mCrossColor = Qt::white;
 
     DataFile mDataFile;
 private:
@@ -74,6 +74,8 @@ private:
     void updateCenteOn2(const QPointF &delta,const QPoint& lastpos);
     void updateKLine();
     void updateKLine2();
+    QPointF getCenterPos(){ return mCenterPos; }
+    void setCenterPos(QPointF pos) { mCenterPos = pos;}
 
     void reCalSceneAviWidth();
 
@@ -84,6 +86,8 @@ private:
     qreal mSceneAviWidth;
 
     Viewport* mViewPort;
+
+    QPointF mCenterPos;
 
 
 };

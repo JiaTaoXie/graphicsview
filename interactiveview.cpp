@@ -30,9 +30,10 @@ InteractiveView::InteractiveView(QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
 
     setSceneRect(INT_MIN/2, INT_MIN/2, INT_MAX, INT_MAX);
-    centerOn(0, 0);
+    QPointF centerPos = QPointF(0,0);
+    centerOn(centerPos);
+    setCenterPos(centerPos);
     reCalSceneAviWidth();
-
 
     setupViewport(mViewPort);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -124,8 +125,8 @@ void InteractiveView::mouseMoveEvent(QMouseEvent *event)
 
     m_lastMousePos = event->pos();
     mCrossPos = m_lastMousePos;
-//    viewport()->update();
-    mViewPort->update();
+    viewport()->update();
+//    mViewPort->update();
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -177,15 +178,15 @@ void InteractiveView::paintEvent(QPaintEvent *event)
     //画背景
     //drawBK();
     //画k线
-    if(false){
+    if(true){
         QPainter painter;
-        painter.begin(this->viewport());
-
+        painter.begin(this->viewport());        
         drawCross(painter);
 
         QPen pen = painter.pen();
         pen.setColor(Qt::red);
         painter.setPen(pen);
+
         QPointF scenePos = mapToScene(mCrossPos);
         QPointF centerPos = mapToScene(QPoint(0,0));
         painter.drawText(mCrossPos+QPointF(10,-10),QString("x=%1,y=%2,m11:%3,m12:%4")
@@ -194,7 +195,7 @@ void InteractiveView::paintEvent(QPaintEvent *event)
         painter.drawText(mCrossPos+QPointF(10,-40),QString("centerPos:x=%1,y=%2,m_scale:%3")
                          .arg(centerPos.x()).arg(centerPos.y()).arg(QString::number(m_scale,'f',6)));
 
-        painter.drawRect(QRect(rect().center().x()-2, rect().center().y() - 2,4,4));
+//        painter.drawRect(QRect(rect().center().x()-2, rect().center().y() - 2,4,4));
     }
 
 }
@@ -317,10 +318,18 @@ void InteractiveView::translate(QPointF delta)
     // 根据当前 zoom 缩放平移数
     delta *= transform().m11();
 
+    qDebug() << "mouse move delta:" << delta;
+
+//    QPointF oldCenterPos =
+
     // view 根据鼠标下的点作为锚点来定位 scene
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
-    centerOn(mapToScene(newCenter));
+//    QPoint newCenter(VIEW_WIDTH / 2 - delta.x(),  VIEW_HEIGHT / 2 - delta.y());
+//    centerOn(mapToScene(newCenter));
+
+    QPointF newCenter = getCenterPos() - delta;
+    centerOn(newCenter);
+    setCenterPos(newCenter);
 
     // scene 在 view 的中心点作为锚点
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);

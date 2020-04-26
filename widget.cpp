@@ -94,7 +94,8 @@ void Widget::paintEvent(QPaintEvent *event)
 {
     QPainter painter;
     painter.begin(this);
-    painter.setPen(QPen(Qt::green));   
+    painter.fillRect(rect(),QBrush(QColor("#2F3843")));
+    painter.setPen(QPen(QColor(255,255,255,50)));
 
     qreal heightSpace = height()/6;
     qreal widthSpace = width()/6;

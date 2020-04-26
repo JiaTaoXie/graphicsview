@@ -113,9 +113,7 @@ void InteractiveView::mouseMoveEvent(QMouseEvent *event)
         QPointF delta;
         if(autoUpdateKLine){
             delta = mapToScene(event->pos().x(),0) - mapToScene(m_lastMousePos.x(),0);
-
             updateCenteOn2(delta,event->pos());
-
         }
         else{
             delta = mapToScene(event->pos()) - mapToScene(m_lastMousePos);
@@ -181,7 +179,6 @@ void InteractiveView::wheelEvent(QWheelEvent *event)
     scrollAmount.y() > 0 ? zoomIn() : zoomOut();
 
     reCalSceneAviWidth();
-//    updateKLine();
     updateKLine2();
 }
 
@@ -305,7 +302,6 @@ void InteractiveView::zoom(float scaleFactor)
     if (factor < 1 || factor > 100){
         return ;
     }
-
 
     qDebug() << "====>scaleFactor:" << scaleFactor;
 
@@ -606,5 +602,14 @@ void InteractiveView::makeHeightChanged()
 
 void InteractiveView::addCrossItem()
 {
+
+}
+
+QGraphicsItem* InteractiveView::getCurItem(QPointF crossPos)
+{
+    QRectF selectRect = QRectF(crossPos.x(),-2000,1,2000);
+    QList<QGraphicsItem(*)> itemList = scene()->items(selectRect);
+
+//    qDebug() <<
 
 }

@@ -76,6 +76,7 @@ private:
     void updateKLine2();
     QPointF getCenterPos(){ return mCenterPos; }
     void setCenterPos(QPointF pos) { mCenterPos = pos;}
+    QGraphicsItem* getCurItem(QPointF);
 
     void reCalSceneAviWidth();
 
@@ -88,10 +89,7 @@ private:
     Viewport* mViewPort;
 
     QPointF mCenterPos;
-
-
     qreal mTestScaleX = 1.0;
 };
-
 
 #endif // INTERACTIVEVIEW_H

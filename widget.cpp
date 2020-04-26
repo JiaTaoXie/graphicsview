@@ -46,8 +46,8 @@ void Widget::initView()
 
     ui->gridLayout->addWidget(mView);
 
-    QPushButton* btn = new QPushButton("打开",this);
-    btn->move(mView->pos());
+//    QPushButton* btn = new QPushButton("打开",this);
+//    btn->move(mView->pos());
 }
 
 void Widget::on_lineEdit_returnPressed()
